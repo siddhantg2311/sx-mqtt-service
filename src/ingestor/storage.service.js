@@ -30,6 +30,7 @@ async function writeToInflux(batch) {
       if (msg.spindle_override !== undefined) point.floatField('spindle_override', parseFloat(msg.spindle_override));
       if (msg.feed_rate !== undefined) point.floatField('feed_rate', parseFloat(msg.feed_rate));
       if (msg.feed_override !== undefined) point.floatField('feed_override', parseFloat(msg.feed_override));
+      if (msg.rapid_override !== undefined) point.floatField('rapid_override', parseFloat(msg.rapid_override));
       if (msg.tool_number !== undefined) point.floatField('tool_number', parseFloat(msg.tool_number));
       if (msg.tool_name !== undefined) point.stringField('tool_name', String(msg.tool_name));
       if (msg.cutting_time !== undefined) point.floatField('cutting_time', parseFloat(msg.cutting_time));
