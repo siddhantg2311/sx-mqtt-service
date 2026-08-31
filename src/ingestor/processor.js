@@ -1,11 +1,19 @@
 const logger = require("../common/logger");
 
 /**
- * Parses the MQTT topic to extract machine_id if not present in payload.
- * Expected topic: machines/{factory_id}/{machine_id}/telemetry
+ * Parses the MQTT topic to extract factory_id/machine_id if not present in payload.
+ *
+ * Handles two topic shapes:
+ *  - machines/{factory_id}/{machine_id}/telemetry   (standard)
+ *  - machines/{factory_id}/telemetry/{machine_id}   (Smart Connect auto-appends
+ *    the registered machine name as the final segment of whatever topic is
+ *    configured, so a base of "machines/{factory_id}/telemetry" ends up here)
  */
 function parseTopic(topic) {
   const parts = topic.split('/');
+  if (parts.length === 4 && parts[2] === 'telemetry' && parts[3] !== 'telemetry') {
+    return { factory_id: parts[1], machine_id: parts[3] };
+  }
   if (parts.length >= 3) {
     return {
       factory_id: parts[1],

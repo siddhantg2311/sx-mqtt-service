@@ -41,6 +41,18 @@ function initMQTT(onMessage) {
       }
     });
 
+    // Some vendor connectors (e.g. Mitsubishi Smart Connect) auto-append the
+    // registered machine name as the final topic segment instead of ending
+    // in a literal "telemetry" segment. Subscribe to that shape too.
+    const altTopic = 'machines/+/telemetry/+';
+    client.subscribe(altTopic, { qos: 1 }, (err) => {
+      if (err) {
+        logger.error({ err }, `Subscription failed for topic: ${altTopic}`);
+      } else {
+        logger.info(`Subscribed to topic: ${altTopic}`);
+      }
+    });
+
     // Subscribe to test topic
     if (config.mqtt.testTopic) {
       client.subscribe(config.mqtt.testTopic, { qos: 1 }, (err) => {
